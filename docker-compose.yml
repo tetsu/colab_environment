@@ -1,0 +1,32 @@
+# ----------------------------------------------------------
+# docker-compose.yml
+# ----------------------------------------------------------
+version: '3.9'
+
+services:
+  pytorch:
+    build: .
+    # or "image: your-docker-registry/your-image" if you push it somewhere
+    container_name: pytorch-container
+    volumes:
+      - .:/workspace  # Mount local directory for code/data
+    working_dir: /workspace
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    # For Docker Compose v2 with nvidia:
+    # You can specify something like:
+    #   deploy:
+    #     resources:
+    #       reservations:
+    #         devices:
+    #           - capabilities: [gpu]
+    # If you are using Compose v1 or older, you might need:
+    #   runtime: nvidia
+    # or a device request config. 
+    # See https://docs.docker.com/compose/gpu-support/
+    tty: true
+    stdin_open: true
